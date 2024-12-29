@@ -1,0 +1,13 @@
+{
+  "appName": "Nikola my love",
+  "appKey": "demo",
+  "themes": [
+    {
+      "key": "dark",
+      "values": {
+        "backgroundColor": "#eb4034",
+        "fontColor": "#000"
+      }
+    }
+  ]
+}

@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -24,6 +17,17 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import * as applicationConfig from '../application.configs.json';
+import {
+  SaasAppConnectorProvider,
+  useSaasAppConnector,
+} from './saas-app-connector';
+import {
+  ISaasAppConnector,
+  ISaasAppConnectorProvider,
+} from './saas-app-connector/types.tsx';
+import {useTheme} from './saas-app-connector/Hooks';
+import {IThemeContext} from './saas-app-connector/Hooks/Theme/types.tsx';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -63,33 +67,35 @@ function App(): React.JSX.Element {
   };
 
   return (
+    <SaasAppConnectorProvider SaasAppConfigs={applicationConfig}>
+      <Content />
+    </SaasAppConnectorProvider>
+  );
+}
+
+function Content(): React.JSX.Element {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+  const {applicationConfigs}: ISaasAppConnector = useSaasAppConnector();
+  const {activeTheme}: IThemeContext = useTheme();
+
+  return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        backgroundColor={activeTheme?.values.backgroundColor}
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: activeTheme?.values.backgroundColor,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <Text style={{color:activeTheme?.values.fontColor}}>{applicationConfigs?.appName}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
